@@ -23,28 +23,27 @@ class VideoStoreTest extends TestCase {
         regular3 = new RegularMovie("Regular 3")
     }
 
-    private void assertAmountAndPointsForReport(double expectedAmount, int expectedPoints) {
-        assertEquals(expectedAmount, statement.getAmountOwed())
-        assertEquals(expectedPoints, statement.getFrequentRenterPoints())
-    }
 
     void testSingleNewReleaseStatement() {
         statement.addRental(new Rental(newRelease1, 3))
         statement.makeRentalStatement()
-        assertAmountAndPointsForReport(9.0, 2)
+        assert statement.amountOwed == 9.0 as double
+        assert statement.frequentRenterPoints == 2 as int
     }
 
     void testDualNewReleaseStatement() {
         statement.addRental(new Rental(newRelease1, 3))
         statement.addRental(new Rental(newRelease2, 3))
         statement.makeRentalStatement()
-        assertAmountAndPointsForReport(18.0, 4)
+        assert statement.amountOwed == 18.0 as double
+        assert statement.frequentRenterPoints == 4 as int
     }
 
     void testSingleChildrensStatement() {
         statement.addRental(new Rental(childrens, 3))
         statement.makeRentalStatement()
-        assertAmountAndPointsForReport(1.5, 1)
+        assert statement.amountOwed == 1.5 as double
+        assert statement.frequentRenterPoints == 1 as int
     }
 
 
@@ -53,7 +52,8 @@ class VideoStoreTest extends TestCase {
         statement.addRental(new Rental(regular2, 2))
         statement.addRental(new Rental(regular3, 3))
         statement.makeRentalStatement()
-        assertAmountAndPointsForReport(7.5, 3)
+        assert statement.amountOwed == 7.5 as double
+        assert statement.frequentRenterPoints == 3 as int
     }
 
     void testRentalStatementFormat() {
@@ -61,7 +61,7 @@ class VideoStoreTest extends TestCase {
         statement.addRental(new Rental(regular2, 2))
         statement.addRental(new Rental(regular3, 3))
 
-        assertEquals(
+        assert statement.makeRentalStatement() ==
                 """\
                 Rental Record for Customer Name
                 \tRegular 1\t2.0
@@ -69,7 +69,6 @@ class VideoStoreTest extends TestCase {
                 \tRegular 3\t3.5
                 You owed 7.5
                 You earned 3 frequent renter points
-                """.stripIndent(),
-                statement.makeRentalStatement())
+                """.stripIndent()
     }
 }
