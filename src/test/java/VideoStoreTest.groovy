@@ -1,6 +1,6 @@
 import junit.framework.TestCase;
 
-public class VideoStoreTest extends TestCase {
+class VideoStoreTest extends TestCase {
     private RentalStatement statement;
     private Movie newRelease1;
     private Movie newRelease2;
@@ -9,7 +9,7 @@ public class VideoStoreTest extends TestCase {
     private Movie regular2;
     private Movie regular3;
 
-    public VideoStoreTest(String name) {
+    VideoStoreTest(String name) {
         super(name);
     }
 
@@ -28,27 +28,27 @@ public class VideoStoreTest extends TestCase {
         assertEquals(expectedPoints, statement.getFrequentRenterPoints());
     }
 
-    public void testSingleNewReleaseStatement() {
+    void testSingleNewReleaseStatement() {
         statement.addRental(new Rental(newRelease1, 3));
         statement.makeRentalStatement();
         assertAmountAndPointsForReport(9.0, 2);
     }
 
-    public void testDualNewReleaseStatement() {
+    void testDualNewReleaseStatement() {
         statement.addRental(new Rental(newRelease1, 3));
         statement.addRental(new Rental(newRelease2, 3));
         statement.makeRentalStatement();
         assertAmountAndPointsForReport(18.0, 4);
     }
 
-    public void testSingleChildrensStatement() {
+    void testSingleChildrensStatement() {
         statement.addRental(new Rental(childrens, 3));
         statement.makeRentalStatement();
         assertAmountAndPointsForReport(1.5, 1);
     }
 
 
-    public void testMultipleRegularStatement() {
+    void testMultipleRegularStatement() {
         statement.addRental(new Rental(regular1, 1));
         statement.addRental(new Rental(regular2, 2));
         statement.addRental(new Rental(regular3, 3));
@@ -56,7 +56,7 @@ public class VideoStoreTest extends TestCase {
         assertAmountAndPointsForReport(7.5, 3);
     }
 
-    public void testRentalStatementFormat() {
+    void testRentalStatementFormat() {
         statement.addRental(new Rental(regular1, 1));
         statement.addRental(new Rental(regular2, 2));
         statement.addRental(new Rental(regular3, 3));
