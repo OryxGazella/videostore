@@ -62,12 +62,14 @@ class VideoStoreTest extends TestCase {
         statement.addRental(new Rental(regular3, 3))
 
         assertEquals(
-                "Rental Record for Customer Name\n" +
-                        "\tRegular 1\t2.0\n" +
-                        "\tRegular 2\t2.0\n" +
-                        "\tRegular 3\t3.5\n" +
-                        "You owed 7.5\n" +
-                        "You earned 3 frequent renter points\n",
+                """\
+                Rental Record for Customer Name
+                \tRegular 1\t2.0
+                \tRegular 2\t2.0
+                \tRegular 3\t3.5
+                You owed 7.5
+                You earned 3 frequent renter points
+                """.stripIndent(),
                 statement.makeRentalStatement())
     }
 }
