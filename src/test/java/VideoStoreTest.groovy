@@ -20,47 +20,72 @@ class VideoStoreTest extends Specification {
     }
 
     def 'New releases cost £3 / day and earn 2 frequent renter points'() {
-        expect:
+        given:
         statement.addRental(new Rental(newRelease1, 3))
+
+        when:
         statement.makeRentalStatement()
-        statement.amountOwed == 9.0 as double
-        statement.frequentRenterPoints == 2 as int
+
+        then:
+        with(statement) {
+            amountOwed == 9.0 as double
+            frequentRenterPoints == 2 as int
+        }
     }
 
     def 'Two new releases rented for 3 days each cost 2 x 3 x £3 = £18 earning 4 points'() {
-        expect:
+        given:
         statement.addRental(new Rental(newRelease1, 3))
         statement.addRental(new Rental(newRelease2, 3))
+
+        when:
         statement.makeRentalStatement()
-        statement.amountOwed == 18.0 as double
-        statement.frequentRenterPoints == 4 as int
+
+        then:
+        with(statement) {
+            amountOwed == 18.0 as double
+            frequentRenterPoints == 4 as int
+        }
     }
 
     def "A children's rental costs 50p a day, but only earns you a single point"() {
-        expect:
+        given:
         statement.addRental(new Rental(childrens, 3))
+
+        when:
         statement.makeRentalStatement()
-        statement.amountOwed == 1.5 as double
-        statement.frequentRenterPoints == 1 as int
+
+        then:
+        with(statement) {
+            amountOwed == 1.5 as double
+            frequentRenterPoints == 1 as int
+        }
     }
 
 
     def 'Regular movies cost £2 for two days and £1 50p every day after that'() {
-        expect:
+        given:
         statement.addRental(new Rental(regular1, 1))
         statement.addRental(new Rental(regular2, 2))
         statement.addRental(new Rental(regular3, 3))
+
+        when:
         statement.makeRentalStatement()
-        statement.amountOwed == 7.5 as double
-        statement.frequentRenterPoints == 3 as int
+
+        then:
+        with(statement) {
+            amountOwed == 7.5 as double
+            frequentRenterPoints == 3 as int
+        }
     }
 
-    def 'Rental statements show the cost of every movie rental, the total owned and the frequent renter points'() {
-        expect:
+    def 'Rental statements show the cost of every movie rental, the total owed and the frequent renter points'() {
+        given:
         statement.addRental(new Rental(regular1, 1))
         statement.addRental(new Rental(regular2, 2))
         statement.addRental(new Rental(regular3, 3))
 
+        expect:
         statement.makeRentalStatement() ==
             """\
             Rental Record for Customer Name
