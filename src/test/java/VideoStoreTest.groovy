@@ -1,27 +1,20 @@
 import spock.lang.Specification
 
-class VideoStoreTest extends Specification {
-    private RentalStatement statement
-    private Movie newRelease1
-    private Movie newRelease2
-    private Movie childrens
-    private Movie regular1
-    private Movie regular2
-    private Movie regular3
+import static DSL.aStatement
 
-    def setup() {
-        statement = new RentalStatement("Customer Name")
-        newRelease1 = new NewReleaseMovie("New Release 1")
-        newRelease2 = new NewReleaseMovie("New Release 2")
-        childrens = new ChildrensMovie("Childrens")
-        regular1 = new RegularMovie("Regular 1")
-        regular2 = new RegularMovie("Regular 2")
-        regular3 = new RegularMovie("Regular 3")
-    }
+class VideoStoreTest extends Specification {
 
     def 'New releases cost £3 / day and earn 2 frequent renter points'() {
         given:
-        statement.addRental(new Rental(newRelease1, 3))
+        def statement = aStatement {
+            customerName 'Cumberland Bandersnatch'
+            rentals {
+                newRelease {
+                    title 'Store Trek Free: The Search for Specs'
+                    days 3
+                }
+            }
+        }
 
         when:
         statement.makeRentalStatement()
@@ -35,8 +28,19 @@ class VideoStoreTest extends Specification {
 
     def 'Two new releases rented for 3 days each cost 2 x 3 x £3 = £18 earning 4 points'() {
         given:
-        statement.addRental(new Rental(newRelease1, 3))
-        statement.addRental(new Rental(newRelease2, 3))
+        def statement = aStatement {
+            customerName "Scala JoHudson"
+            rentals {
+                newRelease {
+                    title "She"
+                    days 3
+                }
+                newRelease {
+                    title "The lady with bling in her ear"
+                    days 3
+                }
+            }
+        }
 
         when:
         statement.makeRentalStatement()
@@ -50,7 +54,15 @@ class VideoStoreTest extends Specification {
 
     def "A children's rental costs 50p a day, but only earns you a single point"() {
         given:
-        statement.addRental(new Rental(childrens, 3))
+        def statement = aStatement {
+            customerName "Donny Night-Louie"
+            rentals {
+                childrensMovie {
+                    title "The Unbearable Lightness of Being - Sing Along Edition"
+                    days 3
+                }
+            }
+        }
 
         when:
         statement.makeRentalStatement()
@@ -62,12 +74,25 @@ class VideoStoreTest extends Specification {
         }
     }
 
-
     def 'Regular movies cost £2 for two days and £1 50p every day after that'() {
         given:
-        statement.addRental(new Rental(regular1, 1))
-        statement.addRental(new Rental(regular2, 2))
-        statement.addRental(new Rental(regular3, 3))
+        def statement = aStatement {
+            customerName "Kenny Smith"
+            rentals {
+                regularMovie {
+                    title "Drachma"
+                    days 1
+                }
+                regularMovie {
+                    title "Clicks"
+                    days 2
+                }
+                regularMovie {
+                    title "Clicks 2"
+                    days 3
+                }
+            }
+        }
 
         when:
         statement.makeRentalStatement()
@@ -81,19 +106,33 @@ class VideoStoreTest extends Specification {
 
     def 'Rental statements show the cost of every movie rental, the total owed and the frequent renter points'() {
         given:
-        statement.addRental(new Rental(regular1, 1))
-        statement.addRental(new Rental(regular2, 2))
-        statement.addRental(new Rental(regular3, 3))
+        def statement = aStatement {
+            customerName "Valyssa Imes"
+            rentals {
+                regularMovie {
+                    title "Centy Awful Season 1"
+                    days 1
+                }
+                regularMovie {
+                    title "Centy Awful Season 2"
+                    days 2
+                }
+                regularMovie {
+                    title "Centy Awful Season 3"
+                    days 3
+                }
+            }
+        }
 
         expect:
         statement.makeRentalStatement() ==
-            """\
-            Rental Record for Customer Name
-            \tRegular 1\t2.0
-            \tRegular 2\t2.0
-            \tRegular 3\t3.5
-            You owed 7.5
-            You earned 3 frequent renter points
-            """.stripIndent()
+                '''\
+                Rental Record for Valyssa Imes
+                \tCenty Awful Season 1\t2.0
+                \tCenty Awful Season 2\t2.0
+                \tCenty Awful Season 3\t3.5
+                You owed 7.5
+                You earned 3 frequent renter points
+                '''.stripIndent()
     }
 }
